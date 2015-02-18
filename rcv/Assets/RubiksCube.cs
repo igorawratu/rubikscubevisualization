@@ -6,6 +6,7 @@ public enum Axis{X, Y, Z, NONE};
 
 public class RubiksCube : MonoBehaviour{
     public GameObject cubePrefab;
+    public float rotationSpeed = 1;
 
     void Awake() {
         mAngleAcc = 0;
@@ -109,7 +110,7 @@ public class RubiksCube : MonoBehaviour{
             return false;
         }
 
-        float currRotAmount = 90 * Time.deltaTime;
+        float currRotAmount = 90 * Time.deltaTime / rotationSpeed;
         foreach(GameObject rotObj in mRotatingObjects) {
             if(mAngleAcc + currRotAmount > 90)
                 currRotAmount = 90 - mAngleAcc;
@@ -184,7 +185,7 @@ public class RubiksCube : MonoBehaviour{
             }
         }
 
-        if(!_dirPos) {
+        if(_dirPos) {
             newCubeState[0, 0, 0] = mRubiksCube[1, 0, 0];
             newCubeState[1, 0, 0] = mRubiksCube[1, 1, 0];
             newCubeState[1, 1, 0] = mRubiksCube[0, 1, 0];
