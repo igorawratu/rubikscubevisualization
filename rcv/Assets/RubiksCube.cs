@@ -11,12 +11,16 @@ public class RubiksCube : MonoBehaviour{
     public float rotationSpeed = 1;
     public Text moveQueueText;
     public UnityEngine.UI.InputField moveIF;
+    public int shuffleMoves = 20;
+    public Text shuffleText;
 
     void Awake() {
         mAngleAcc = 0;
         mRotatingObjects = new List<GameObject>();
         mCurrAxis = Vector3.zero;
         mCommandQueue = new List<KeyValuePair<Axis, bool>>();
+        mShuffleQueue = new List<KeyValuePair<Axis, bool>>();
+        mRng = new System.Random();
 
         mRubiksCube = new GameObject[2, 2, 2];
         mInitialCube = new GameObject[2, 2, 2];
@@ -41,18 +45,20 @@ public class RubiksCube : MonoBehaviour{
             resetCube();
             return;
         }
-        if(!Global.locked && !isIFFocused(moveIF))
+        if(mShuffleQueue.Count == 0 && !isIFFocused(moveIF))
             checkNewMoves();
         else if(isIFFocused(moveIF) && Input.GetKeyDown(KeyCode.Return)) {
             submitMoveIF();
         }
 
-        if(mCommandQueue.Count == 0)
+        List<KeyValuePair<Axis, bool>> currentActiveQueue = mShuffleQueue.Count > 0 ? mShuffleQueue : mCommandQueue;
+
+        if(currentActiveQueue.Count == 0)
             rotateAxis(Axis.NONE, false);
         else {
-            KeyValuePair<Axis, bool> currCommand = mCommandQueue[0];
+            KeyValuePair<Axis, bool> currCommand = currentActiveQueue[0];
             if(rotateAxis(currCommand.Key, currCommand.Value))
-                mCommandQueue.RemoveAt(0);
+                currentActiveQueue.RemoveAt(0);
         }
 
         moveQueueText.text = constructMoveQueueText();
@@ -102,6 +108,20 @@ public class RubiksCube : MonoBehaviour{
         return false;
     }
 
+    public void shuffle() {
+        resetCube();
+
+        string[] possibleMoves = new string[6]{"x", "X", "z", "Z", "y", "Y"};
+        string moves = "";
+
+        for(int k = 0; k < shuffleMoves; ++k)
+            moves += possibleMoves[mRng.Next(0, 6)];
+
+        mShuffleQueue = interpretCommands(moves);
+
+        shuffleText.text = "Shuffle moves: " + moves;
+    }
+
     private void resetCube() {
         for(uint k = 0; k < 2; ++k) {
             for(uint i = 0; i < 2; ++i) {
@@ -113,14 +133,16 @@ public class RubiksCube : MonoBehaviour{
             }
         }
         mCommandQueue.Clear();
-        Global.locked = false;
         mRotatingObjects.Clear();
         mAngleAcc = 0;
         mCurrAxis = Vector3.zero;
+        mShuffleQueue.Clear();
     }
 
     private void submitMoveIF() {
         addCommands(moveIF.text);
+        moveIF.text = "";
+        EventSystem.current.SetSelectedGameObject(null);
     }
 
     private List<KeyValuePair<Axis, bool>> interpretCommands(string _commands) {
@@ -295,14 +317,6 @@ public class RubiksCube : MonoBehaviour{
         return result;
     }
 
-    private void lockInput() {
-        Global.locked = true;
-    }
-
-    private void unlockInput() {
-        Global.locked = false;
-    }
-
     private bool isIFFocused(UnityEngine.UI.InputField _if) {
         GameObject currObj = EventSystem.current.currentSelectedGameObject;
         return (currObj != null && currObj.GetComponent<UnityEngine.UI.InputField>() == _if);
@@ -314,4 +328,6 @@ public class RubiksCube : MonoBehaviour{
     private GameObject[,,] mInitialCube;
     private List<GameObject> mRotatingObjects;
     private List<KeyValuePair<Axis, bool>> mCommandQueue;
+    private List<KeyValuePair<Axis, bool>> mShuffleQueue;
+    private System.Random mRng;
 }

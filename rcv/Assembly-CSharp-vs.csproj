@@ -47,7 +47,6 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\CameraControl.cs" />
-     <Compile Include="Assets\Global.cs" />
      <Compile Include="Assets\InputField.cs" />
      <Compile Include="Assets\RubiksCube.cs" />
  <Reference Include="UnityEngine.UI">
