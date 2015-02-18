@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public enum Axis{X, Y, Z, NONE};
 
 public class RubiksCube : MonoBehaviour{
-    public GameObject cubePrefab;
+    public GameObject[] quarters = new GameObject[8];
     public float rotationSpeed = 1;
     public Text moveQueueText;
     public UnityEngine.UI.InputField moveIF;
@@ -24,11 +24,12 @@ public class RubiksCube : MonoBehaviour{
 
         mRubiksCube = new GameObject[2, 2, 2];
         mInitialCube = new GameObject[2, 2, 2];
+        int counter = 0;
+
         for(uint k = 0; k < 2; ++k) {
             for(uint i = 0; i < 2; ++i) {
                 for(uint l = 0; l < 2; ++l) {
-                    mRubiksCube[k, i, l] = (GameObject)Instantiate(cubePrefab);
-                    mRubiksCube[k, i, l].transform.position = new Vector3(-0.5f + k, -0.5f + i, -0.5f + l);
+                    mRubiksCube[k, i, l] = (GameObject)Instantiate(quarters[counter++]);
                     mInitialCube[k, i, l] = mRubiksCube[k, i, l];
                 }
             }
@@ -123,12 +124,14 @@ public class RubiksCube : MonoBehaviour{
     }
 
     private void resetCube() {
+        int counter = 0;
+
         for(uint k = 0; k < 2; ++k) {
             for(uint i = 0; i < 2; ++i) {
                 for(uint l = 0; l < 2; ++l) {
                     mRubiksCube[k, i, l] = mInitialCube[k, i, l];
-                    mRubiksCube[k, i, l].transform.rotation = Quaternion.identity;
-                    mRubiksCube[k, i, l].transform.position = new Vector3(-0.5f + k, -0.5f + i, -0.5f + l);
+                    mRubiksCube[k, i, l].transform.rotation = quarters[counter].transform.rotation;
+                    mRubiksCube[k, i, l].transform.position = quarters[counter++].transform.position;
                 }
             }
         }
