@@ -11,6 +11,7 @@ public class RubiksCube : MonoBehaviour{
     public float rotationSpeed = 1;
     public Text moveQueueText;
     public UnityEngine.UI.InputField moveIF;
+    public UnityEngine.UI.InputField shuffleIF;
     public int shuffleMoves = 20;
     public Text shuffleText;
 
@@ -42,6 +43,8 @@ public class RubiksCube : MonoBehaviour{
 	
 	// Update is called once per frame
 	void Update(){
+        updateParticleEffect();
+
         if(Input.GetKeyDown(KeyCode.R)) {
             resetCube();
             return;
@@ -110,6 +113,12 @@ public class RubiksCube : MonoBehaviour{
     }
 
     public void shuffle() {
+        int newShuffleAmount = 0;
+        bool success = System.Int32.TryParse(shuffleIF.text, out newShuffleAmount);
+
+        if(success)
+            shuffleMoves = newShuffleAmount;
+
         resetCube();
 
         string[] possibleMoves = new string[6]{"x", "X", "z", "Z", "y", "Y"};
@@ -221,7 +230,6 @@ public class RubiksCube : MonoBehaviour{
     private void rotx(bool _dirPos) {
         GameObject[,,] newCubeState = new GameObject[2, 2, 2];
 
-        
         for(int k = 0; k < 2; ++k) {
             for(int i = 0; i < 2; ++i) {
                 newCubeState[1, k, i] = mRubiksCube[1, k, i];
@@ -323,6 +331,29 @@ public class RubiksCube : MonoBehaviour{
     private bool isIFFocused(UnityEngine.UI.InputField _if) {
         GameObject currObj = EventSystem.current.currentSelectedGameObject;
         return (currObj != null && currObj.GetComponent<UnityEngine.UI.InputField>() == _if);
+    }
+
+    private void updateParticleEffect() {
+        bool solved = isSolved();
+        if(solved && !gameObject.GetComponent<ParticleSystem>().isPlaying) {
+            gameObject.GetComponent<ParticleSystem>().Play();
+        } else if(!solved && !gameObject.GetComponent<ParticleSystem>().isStopped) {
+            gameObject.GetComponent<ParticleSystem>().Stop();
+        }
+        
+    }
+
+    private bool isSolved() {
+        for(uint k = 0; k < 2; ++k) {
+            for(uint i = 0; i < 2; ++i) {
+                for(uint l = 0; l < 2; ++l) {
+                    if(mRubiksCube[k, i, l] != mInitialCube[k, i, l])
+                        return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     private float mAngleAcc;
