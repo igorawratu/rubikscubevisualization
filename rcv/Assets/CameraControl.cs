@@ -13,12 +13,14 @@ public class CameraControl : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
         if(Input.GetKey(KeyCode.W)) {
-            gameObject.transform.RotateAround(Vector3.zero, transform.right, 360 * Time.deltaTime * cameraSpeed);
+            if(gameObject.transform.localEulerAngles.x < 80 || gameObject.transform.localEulerAngles.x > 270)
+                gameObject.transform.RotateAround(Vector3.zero, transform.right, 360 * Time.deltaTime * cameraSpeed);
         }
         else if(Input.GetKey(KeyCode.S)) {
-            gameObject.transform.RotateAround(Vector3.zero, -transform.right, 360 * Time.deltaTime * cameraSpeed);
+            if(gameObject.transform.localEulerAngles.x < 90 || gameObject.transform.localEulerAngles.x > 280)
+                gameObject.transform.RotateAround(Vector3.zero, -transform.right, 360 * Time.deltaTime * cameraSpeed);
         }
 
         if(Input.GetKey(KeyCode.A)) {
