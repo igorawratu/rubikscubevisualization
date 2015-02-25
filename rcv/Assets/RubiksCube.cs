@@ -43,6 +43,9 @@ public class RubiksCube : MonoBehaviour{
 	
 	// Update is called once per frame
 	void Update(){
+        if(Input.GetKeyDown(KeyCode.Escape))
+            Application.Quit();
+
         updateParticleEffect();
 
         if(Input.GetKeyDown(KeyCode.R)) {
