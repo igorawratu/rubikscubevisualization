@@ -7,13 +7,22 @@ public class CameraControl : MonoBehaviour {
     public float maxDist = 10;
     public float zoomSpeed = 3;
 
+    private Vector3 pos;
+    private Quaternion rot;
+
 	// Use this for initialization
 	void Start () {
-	
+        pos = gameObject.transform.position;
+        rot = gameObject.transform.rotation;
 	}
 	
 	// Update is called once per frame
 	void FixedUpdate () {
+        if(Input.GetKey(KeyCode.H)){
+            gameObject.transform.position = pos;
+            gameObject.transform.rotation = rot;
+        }
+
         if(Input.GetKey(KeyCode.W)) {
             if(gameObject.transform.localEulerAngles.x < 80 || gameObject.transform.localEulerAngles.x > 270)
                 gameObject.transform.RotateAround(Vector3.zero, transform.right, 360 * Time.deltaTime * cameraSpeed);

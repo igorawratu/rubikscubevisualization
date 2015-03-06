@@ -32,6 +32,11 @@ public class RubiksCube : MonoBehaviour{
                 for(uint l = 0; l < 2; ++l) {
                     mRubiksCube[k, i, l] = (GameObject)Instantiate(quarters[counter++]);
                     mInitialCube[k, i, l] = mRubiksCube[k, i, l];
+                    spheresegscript sss = mRubiksCube[k, i, l].transform.Find("orientation").GetComponent<spheresegscript>();
+                    int ssid = getSSID(k, i, l);
+                    int orientation = ssid < 5 ? 1 : 3;
+                    sss.setSpheresegInfo(orientation, ssid);
+                    sss.toggleText();
                 }
             }
         }
@@ -135,6 +140,17 @@ public class RubiksCube : MonoBehaviour{
         shuffleText.text = "Shuffle moves: " + moves;
     }
 
+    public void toggleText() {
+        for(uint k = 0; k < 2; ++k) {
+            for(uint i = 0; i < 2; ++i) {
+                for(uint l = 0; l < 2; ++l) {
+                    spheresegscript sss = mRubiksCube[k, i, l].transform.Find("orientation").GetComponent<spheresegscript>();
+                    sss.toggleText();
+                }
+            }
+        }
+    }
+
     private void resetCube() {
         int counter = 0;
 
@@ -144,6 +160,10 @@ public class RubiksCube : MonoBehaviour{
                     mRubiksCube[k, i, l] = mInitialCube[k, i, l];
                     mRubiksCube[k, i, l].transform.rotation = quarters[counter].transform.rotation;
                     mRubiksCube[k, i, l].transform.position = quarters[counter++].transform.position;
+                    spheresegscript sss = mRubiksCube[k, i, l].transform.Find("orientation").GetComponent<spheresegscript>();
+                    int ssid = getSSID(k, i, l);
+                    int orientation = ssid < 5 ? 1 : 3;
+                    sss.setSpheresegInfo(orientation, ssid);
                 }
             }
         }
@@ -237,6 +257,8 @@ public class RubiksCube : MonoBehaviour{
             for(int i = 0; i < 2; ++i) {
                 newCubeState[1, k, i] = mRubiksCube[1, k, i];
                 mRotatingObjects.Add(mRubiksCube[0, k, i]);
+                spheresegscript sss = mRubiksCube[0, k, i].transform.Find("orientation").GetComponent<spheresegscript>();
+                sss.rot(Axis.X, _dirPos);
             }
         }
 
@@ -263,6 +285,8 @@ public class RubiksCube : MonoBehaviour{
             for(int i = 0; i < 2; ++i) {
                 newCubeState[k, 1, i] = mRubiksCube[k, 1, i];
                 mRotatingObjects.Add(mRubiksCube[k, 0, i]);
+                spheresegscript sss = mRubiksCube[k, 0, i].transform.Find("orientation").GetComponent<spheresegscript>();
+                sss.rot(Axis.Y, _dirPos);
             }
         }
 
@@ -289,6 +313,8 @@ public class RubiksCube : MonoBehaviour{
             for(int i = 0; i < 2; ++i) {
                 newCubeState[k, i, 1] = mRubiksCube[k, i, 1];
                 mRotatingObjects.Add(mRubiksCube[k, i, 0]);
+                spheresegscript sss = mRubiksCube[k, i, 0].transform.Find("orientation").GetComponent<spheresegscript>();
+                sss.rot(Axis.Z, _dirPos);
             }
         }
 
@@ -357,6 +383,26 @@ public class RubiksCube : MonoBehaviour{
         }
 
         return true;
+    }
+
+    private int getSSID(uint _x, uint _y, uint _z) {
+        if(_x == 0 && _y == 1 && _z == 0)
+            return 1;
+        if(_x == 1 && _y == 1 && _z == 0)
+            return 2;
+        if(_x == 0 && _y == 1 && _z == 1)
+            return 3;
+        if(_x == 1 && _y == 1 && _z == 1)
+            return 4;
+        if(_x == 0 && _y == 0 && _z == 0)
+            return 5;
+        if(_x == 1 && _y == 0 && _z == 0)
+            return 6;
+        if(_x == 0 && _y == 0 && _z == 1)
+            return 7;
+        if(_x == 1 && _y == 0 && _z == 1)
+            return 8;
+        else return 0;
     }
 
     private float mAngleAcc;
