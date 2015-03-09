@@ -12,10 +12,10 @@ public class spheresegscript : MonoBehaviour {
         float dotBack = Vector3.Dot(gameObject.transform.forward, Camera.main.transform.position - gameObject.transform.position);
         float dotUp = Vector3.Dot(gameObject.transform.up, Camera.main.transform.up);
 
-        if(dotBack > 0) 
+        if(dotBack > 0.2) 
             gameObject.transform.RotateAround(transform.position, transform.up, 180);
 
-        if(dotUp < 0) 
+        if(dotUp < -0.2) 
             gameObject.transform.RotateAround(transform.position, transform.right, 180);
 	}
 
