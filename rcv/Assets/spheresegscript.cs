@@ -23,7 +23,8 @@ public class spheresegscript : MonoBehaviour {
         mOrientation = _orientation;
         mSpheresegID = _spheresegID;
 
-        updateText();
+        if(gameObject.GetComponent<TextMesh>().text != "")
+            updateText();
     }
 
     public void rot(Axis _axis, bool _dirPos) {

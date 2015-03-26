@@ -106,7 +106,7 @@ public class RubiksCube : MonoBehaviour{
                     roty(_dirPositive);
                     break;
                 case Axis.Z:
-                    mCurrAxis = _dirPositive ? Vector3.back : Vector3.forward;
+                    mCurrAxis = _dirPositive ? Vector3.forward : Vector3.back;
                     rotz(_dirPositive);
                     break;
                 default:
@@ -318,7 +318,7 @@ public class RubiksCube : MonoBehaviour{
             }
         }
 
-        if(_dirPos) {
+        if(!_dirPos) {
             newCubeState[0, 0, 0] = mRubiksCube[1, 0, 0];
             newCubeState[1, 0, 0] = mRubiksCube[1, 1, 0];
             newCubeState[1, 1, 0] = mRubiksCube[0, 1, 0];
